@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página con Galería y Simulación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        /* --- Estilos de la Galería (Código anterior) --- */
+        .image-gallery {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-column {
+            flex: 1;
+            min-width: 280px;
+            max-width: 30%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .image-column img {
+            width: 100%;
+            height: 200px; /* Altura fija */
+            object-fit: cover; /* Recorte sin distorsión */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .image-column img:hover {
+            transform: scale(1.03);
+        }
+        .image-column p {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        @media (max-width: 768px) {
+            .image-column {
+                max-width: 48%;
+            }
+        }
+        @media (max-width: 480px) {
+            .image-column {
+                max-width: 95%;
+            }
+        }
+
+        /* --- NUEVOS ESTILOS PARA LA SIMULACIÓN --- */
+        .simulation-container {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+        .controls label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .controls input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80px;
+        }
+        .controls button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+        #projectileCanvas {
+            border: 1px solid #000;
+            background-color: #e6f7ff; /* Color de cielo claro */
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Funciones cuadráticas</h1>
+  
+
+    <h2>Galería de Imágenes Destacadas</h2>
+
+    <div class="image-gallery">
+        <div class="image-column">
+            <img src="img_1.jpg">
+        </div>
+        <div class="image-column">
+            <img src="img_2.jpg">
+        </div>
+        <div class="image-column">
+            <img src="img_3.jpg">
+        </div>
+    </div>
+
+    <h2>Simulador de Proyectil</h2>
+
+    Modifique el ángulo y el impulso inicial. Luego presione "Lanzar"
+
+    <div class="simulation-container">
+        <div class="controls">
+            <div>
+                <label for="angle">Ángulo (grados):</label>
+                <input type="number" id="angle" value="45" min="0" max="90">
+            </div>
+            <div>
+                <label for="velocity">Impulso inicial:</label>
+                <input type="number" id="velocity" value="80" min="1">
+            </div>
+            <button id="launchButton">Lanzar</button>
+        </div>
+        
+        <canvas id="projectileCanvas" width="800" height="400"></canvas>
+    </div>
+
+    <!--<p>Aquí puedes continuar con más contenido después del simulador.</p>-->
+
+
+    <script>
+        // Espera a que el DOM esté cargado para asignar los eventos
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Obtener los elementos del DOM
+            const canvas = document.getElementById('projectileCanvas');
+            const ctx = canvas.getContext('2d');
+            const angleInput = document.getElementById('angle');
+            const velocityInput = document.getElementById('velocity');
+            const launchButton = document.getElementById('launchButton');
+
+            // Constantes de la simulación
+            // Esta 'gravedad' es un valor en píxeles/frame^2 para que se vea bien en el canvas.
+            // No son 9.8 m/s^2 reales, es un valor ajustado para la animación.
+            const G = 0.2; 
+            const groundY = canvas.height; // El "suelo" es el borde inferior del canvas
+            const startX = 0; // El lanzamiento siempre empieza a la izquierda
+
+            let animationId = null; // Para poder detener la animación anterior si se lanza una nueva
+            let projectile = {}; // Objeto para guardar el estado del proyectil
+            let trajectory = []; // Array para guardar la trayectoria
+
+            // Función principal que se ejecuta al presionar "Lanzar"
+            function launch() {
+                // 1. Detener cualquier animación anterior
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+
+                // 2. Obtener valores de los inputs
+                const angleDeg = parseFloat(angleInput.value);
+                const v0 = parseFloat(velocityInput.value);
+                
+                // 3. Convertir ángulo a radianes
+                const angleRad = angleDeg * (Math.PI / 180);
+
+                // 4. Calcular componentes de velocidad inicial
+                // El eje Y del canvas está invertido (0 está arriba), 
+                // por eso la velocidad en Y (vy) es negativa para ir "hacia arriba".
+                projectile = {
+                    x: startX,
+                    y: groundY,
+                    vx: v0 * Math.cos(angleRad),
+                    vy: -v0 * Math.sin(angleRad)
+                };
+                
+                // 5. Limpiar el array de la trayectoria
+                trajectory = [];
+
+                // 6. Iniciar el bucle de animación
+                animate();
+            }
+
+            // Bucle de animación (se llama a sí mismo con requestAnimationFrame)
+            function animate() {
+                // --- Actualizar física ---
+                
+                // Aplicar gravedad a la velocidad vertical
+                projectile.vy += G; 
+                
+                // Actualizar posición basado en la velocidad
+                projectile.x += projectile.vx;
+                projectile.y += projectile.vy;
+
+                // Guardar el punto actual en la trayectoria
+                trajectory.push({ x: projectile.x, y: projectile.y });
+
+                // --- Dibujar en el canvas ---
+                
+                // 1. Limpiar el canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 2. Dibujar la trayectoria (el rastro)
+                ctx.beginPath();
+                ctx.moveTo(startX, groundY);
+                ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)'; // Rastro azul semitransparente
+                ctx.lineWidth = 2;
+                for (const point of trajectory) {
+                    ctx.lineTo(point.x, point.y);
+                }
+                ctx.stroke();
+
+                // 3. Dibujar el proyectil (el punto rojo)
+                ctx.beginPath();
+                ctx.arc(projectile.x, projectile.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                
+                // 4. Dibujar el suelo (una línea simple)
+                ctx.beginPath();
+                ctx.moveTo(0, groundY);
+                ctx.lineTo(canvas.width, groundY);
+                ctx.strokeStyle = '#006400'; // Verde oscuro
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+
+                // --- Condición de parada ---
+                
+                // Detener la animación si el proyectil toca el suelo (y > groundY)
+                // o si se sale de la pantalla por la derecha.
+                if (projectile.y < groundY && projectile.x < canvas.width) {
+                    animationId = requestAnimationFrame(animate);
+                }
+            }
+
+            // Asignar la función launch al evento click del botón
+            launchButton.addEventListener('click', launch);
+            
+            // Lanzar una simulación de ejemplo al cargar la página
+            launch();
+        });
+    </script>
+
+</body>
+</html>

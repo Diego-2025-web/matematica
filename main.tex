@@ -1,0 +1,316 @@
+\documentclass[12pt, a4paper]{article}
+\setlength{\headheight}{14.49998pt}
+\setlength{\oddsidemargin}{-.5in} \setlength{\evensidemargin}{-.5in}
+\setlength{\textwidth}{18.5cm}
+%\setlength{\textheight}{27cm}
+\setlength{\footskip}{-1cm}
+\setlength{\columnsep}{25mm}
+%\voffset-1.3cm
+%\headheight-0.5cm
+\headsep 1cm
+%\topmargin-0.5cm
+% Paquetes básicos
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multicol}
+%\usepackage{pstricks-add}
+%\usepackage{auto-pst-pdf}
+%\usepackage{pst-plot}
+\usepackage{tikz,pgfplots}
+\tikzset{>=latex} % for LaTeX arrow head
+\pgfplotsset{compat=1.17} % TikZ coordinates <-> axes coordinates
+
+% Configuración de la página y encabezado
+\geometry{a4paper, margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{} % Limpiar encabezado y pie de página
+
+\lhead{Colegio Secundario "Dr. Luis Federico Leloir"}
+\rhead{4$^{to}$ Año 3$^{ra}$ división}\\
+%\cfoot{\thepage}
+%\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de comandos para facilitar la escritura
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\fcn}[1]{\ensuremath{f(x) = #1}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+%\tableofcontents
+%\newpage
+
+\section{¿Qué es una Función Lineal?}
+
+Una {\textbf{función}} es una relación entre dos conjuntos (uno de ``entrada'', $x$, y uno de ``salida'', $y$) donde a cada valor de entrada le corresponde \textbf{un único} valor de salida.
+
+Una {\textbf{función lineal}} es un tipo específico de función cuya fórmula general es:
+
+$$ y = mx + b $$
+o también expresada como:
+$$ f(x) = mx + b $$
+
+\begin{itemize}
+\item $x$ es la **variable independiente**.
+\item  $y$ (o $f(x)$) es la **variable dependiente** (su valor depende del valor de $x$).
+\item  $m$ es la **pendiente**.
+\item $b$ es la **ordenada al origen**.
+\end{itemize}
+La representación gráfica de una función lineal es siempre una \textbf{línea recta}.
+
+\section{Componentes de la Función Lineal}
+
+\subsection{La Pendiente ($m$)}
+
+La pendiente, $m$, nos indica la **inclinación** de la recta. Nos dice cuánto cambia $y$ por cada unidad que aumenta $x$.
+
+\begin{itemize}
+    \item Si $m > 0$ (positiva): La recta es \textbf{creciente}. (Sube de izquierda a derecha).
+    \item Si $m < 0$ (negativa): La recta es \textbf{decreciente}. (Baja de izquierda a derecha).
+    \item Si $m = 0$: La recta es \textbf{constante}. (Es horizontal).
+\end{itemize}
+
+Si conocemos dos puntos de la recta, $(x_1, y_1)$ y $(x_2, y_2)$, podemos calcular la pendiente con la fórmula:
+$$ m = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1} $$
+
+\subsection{La Ordenada al Origen ($b$)}
+
+La ordenada al origen, $b$, es el valor de $y$ cuando $x$ vale $0$.
+Gráficamente, es el punto donde la recta \textbf{corta al eje Y}. El punto de corte es siempre $(0, b)$.
+
+\section{Graficar una Función Lineal}
+
+Existen varios métodos. El más eficiente es usar la pendiente y la ordenada.
+
+\paragraph{Método de la Pendiente y Ordenada:}
+Para graficar $y = 2x - 1$:
+\begin{enumerate}
+    \item \textbf{Marcar la ordenada al origen ($b$)}: En este caso, $b = -1$. Marcamos el punto $(0, -1)$ sobre el eje Y.
+    \item \textbf{Usar la pendiente ($m$)}: En este caso, $m = 2$. Podemos escribir la pendiente como fracción: $m = \frac{2}{1}$.
+    \item \textbf{Moverse desde $b$}: A partir del punto $(0, -1)$:
+    \begin{itemize}
+        \item El denominador ($1$) nos dice cuánto movernos en $x$ (derecha).
+        \item El numerador ($2$) nos dice cuánto movernos en $y$ (arriba, porque es positivo).
+    \end{itemize}
+    \item Marcamos el nuevo punto: $(0+1, -1+2) = (1, 1)$.
+    \item \textbf{Unir los puntos}: Trazamos la recta que pasa por $(0, -1)$ y $(1, 1)$.
+\end{enumerate}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[scale=1.0]
+    % --- Ejes Cartesianos ---
+    \draw [-{Stealth[length=2mm]}, thick] (-3,0) -- (4,0) node[right] {$x$};
+    \draw [-{Stealth[length=2mm]}, thick] (0,-3) -- (0,5) node[above] {$y$};
+    
+    % --- Marcas en los ejes ---
+    \foreach \x in {-2,-1,1,2,3}
+        \draw (\x, 2pt) -- (\x, -2pt) node[below, yshift=-3mm] {$\x$};
+    \foreach \y in {-2,-1,1,2,3,4}
+        \draw (2pt, \y) -- (-2pt, \y) node[left, xshift=-3mm] {$\y$};
+    \node [below left] at (0,0) {$0$};
+    
+    % --- Grilla (cuadrícula) ---
+    \draw [help lines, color=gray!50, dashed] (-3,-3) grid (4,5);
+    
+    % --- Graficar la función y = 2x - 1 ---
+    \draw [thick, color=blue, domain=-1.5:3] plot (\x, {2*\x - 1}) node[right, xshift=2mm] {$y = 2x - 1$};
+    
+    % --- Marcar la ordenada al origen ---
+    \filldraw [red] (0,-1) circle (2pt) node[below left, xshift=-2mm] {$b = -1$};
+    
+    % --- Mostrar la pendiente ---
+    \draw [red, dashed, thick] (0,-1) -- (1,-1) node[midway, below] {$\Delta x = 1$};
+    \draw [red, dashed, thick] (1,-1) -- (1,1) node[midway, right] {$\Delta y = 2$};
+    \filldraw [red] (1,1) circle (2pt);
+    \node [red, above right] at (1,1) {$(1, 1)$};
+\end{tikzpicture}
+\caption{Gráfico de la función $y = 2x - 1$ usando el método $m$ y $b$.}
+\end{figure}
+\newpage
+La forma mas simple de graficar una función lineal es mediante la tabla de valores:
+\begin{multicols}{2}
+%\boxed{
+\begin{minipage}{0.6\textwidth}
+%\begin{center}
+\renewcommand{\arraystretch}{1.8} % <-- AJUSTE AQUÍ la altura de las filas
+	\begin{tabular}{|c|p{4cm}|c|}
+		\hline
+		 $x$ &\hspace{1cm}$y=2x-1$&Pares $(x,y)$\\
+		\hline
+        \hline
+		$-2$&$y=2\cdot(-2)-1=-5$&$(-2,-5)$\\
+        \hline
+	$-1$& $y=2\cdot(-1)-1=-3$&$(-1,-3)$\\
+    \hline
+		0 & $y=2\cdot(0)-1=-1$&$(0,-1)$\\
+        \hline
+		1 & $y=2\cdot(+1)-1=1$&$(1,1)$\\
+        \hline
+		$2$& $y=2\cdot(+2)-1=3$&$(2,3)$\\
+		\hline
+	\end{tabular}
+%\end{center}
+\end{minipage}
+%}
+%\colorbox{mygray}
+{
+	\boxed{
+\begin{minipage}{0.5\textwidth}
+% LOAD DATA
+%\begin{tikzpicture}[line cap=round][h]
+\begin{tikzpicture}[h]
+  \begin{axis}[
+    %  domain=-3:3,samples=80,
+      xmin=-4, xmax=3,
+      ymin=-3.8, ymax=4.5,
+      axis lines=center,
+      anchor=origin,x=1cm,y=1cm, % coincide with TikZ coordinates
+      %axis equal image, % fit TikZ image
+      grid=both,
+      xlabel=$x$,
+      ylabel=$y$,
+    ]  
+    %\addplot[green] {2*x-1}node[right, xshift=2mm] {$y = 2x - 1$};
+    \draw [thick, color=green, domain=-1.5:2.5] plot (\x, {2*\x - 1}) node[right,xshift=-2.5cm, yshift=-0.5cm] {$y = 2x - 1$};
+  \addplot[
+  only marks,           % <-- Solo dibuja marcas (puntos), no líneas
+    mark=*,                % Estilo del punto: *
+    mark size=2pt,        % Tamaño del punto
+    color=blue            % Color de los puntos
+  ] table {data.txt};
+  \end{axis}
+
+\end{tikzpicture}
+\end{minipage}
+
+	}
+	}
+\end{multicols}
+%\newpage
+
+\section{Resolviendo la Incógnita (Puntos Clave)}
+
+El término ``con 1 incógnita'' se refiere a que, una vez definida la función, podemos resolver ecuaciones para encontrar un valor desconocido ($x$ o $y$).
+
+\subsection{Encontrar la Raíz (Corte con Eje X)}
+
+La **raíz** de una función es el valor de $x$ para el cual $y$ vale $0$. Es el punto donde la recta \textbf{corta al eje X}.
+Para encontrarla, reemplazamos $y$ por $0$ en la ecuación y despejamos la incógnita $x$.
+
+\paragraph{Ejemplo:} Hallar la raíz de $y = 2x - 1$.
+\begin{align*}
+    0 &= 2x - 1 \\
+    1 &= 2x \\
+    \frac{1}{2} &= x \quad \text{o} \quad x = 0.5
+\end{align*}
+La raíz está en $x = 0.5$. El punto de corte con el eje X es $(0.5, 0)$.
+
+\subsection*{Encontrar $y$ dado $x$}
+
+Simplemente reemplazamos el valor de $x$ en la fórmula y calculamos $y$.
+\paragraph{Ejemplo:} En $y = 2x - 1$, ¿cuánto vale $y$ si $x = 3$?
+$$ y = 2(3) - 1 $$
+$$ y = 6 - 1 $$
+$$ y = 5 $$
+El punto es $(3, 5)$.
+
+\subsection*{Encontrar $x$ dado $y$}
+
+Reemplazamos el valor de $y$ en la fórmula y despejamos la incógnita $x$.
+\paragraph{Ejemplo:} En $y = 2x - 1$, ¿cuánto vale $x$ si $y = 4$?
+$$ 4 = 2x - 1 $$
+$$ 4 + 1 = 2x $$
+$$ 5 = 2x $$
+$$ \frac{5}{2} = x \quad \text{o} \quad x = 2.5 $$
+El punto es $(2.5, 4)$.
+
+\section{Casos Especiales de Funciones Lineales}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[scale=1.0]
+    % --- Ejes y Grilla ---
+    \draw [-{Stealth[length=2mm]}, thick] (-4,0) -- (4,0) node[right] {$x$};
+    \draw [-{Stealth[length=2mm]}, thick] (0,-4) -- (0,5) node[above] {$y$};
+    \draw [help lines, color=gray!50, dashed] (-4,-4) grid (4,5);
+    \foreach \i in {-3,-2,-1,1,2,3} {
+        \draw (\i, 2pt) -- (\i, -2pt) node[below, yshift=-3mm] {$\i$};
+        \draw (2pt, \i) -- (-2pt, \i) node[left, xshift=-3mm] {$\i$};
+    }
+    \node [below left] at (0,0) {$0$};
+
+    % --- 1. Creciente (m>0, b!=0) ---
+    \draw [thick, color=blue, domain=-3.5:2.5] plot (\x, {\x + 2}) 
+        node[right, xshift=2mm] {$y = x + 2$ (Creciente)};
+    
+    % --- 2. Decreciente (m<0, b!=0) ---
+    \draw [thick, color=red, domain=-3:4] plot (\x, {-0.5*\x + 1}) 
+        node[below, yshift=-2mm] {$y = -0.5x + 1$ (Decreciente)};
+
+    % --- 3. Constante (m=0) ---
+    \draw [thick, color=green!70!black, domain=-4:4] plot (\x, {3}) 
+        node[right] {$y = 3$ (Constante)};
+
+    % --- 4. Proporcionalidad Directa (b=0) ---
+    \draw [thick, color=orange, domain=-2:2] plot (\x, {2*\x}) 
+        node[above right, xshift=2mm] {$y = 2x$ (Pasa por el origen)};
+        
+\end{tikzpicture}
+\caption{Comparación de diferentes tipos de funciones lineales.}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Función de Proporcionalidad Directa}: Es un caso donde $b = 0$. La fórmula es $y = mx$. Estas rectas siempre pasan por el origen de coordenadas $(0, 0)$.
+    \item \textbf{Función Constante}: Es un caso donde $m = 0$. La fórmula es $y = b$. Es una recta horizontal a la altura de $b$. El valor de $y$ es siempre $b$, sin importar cuánto valga $x$.
+    \item \textbf{Rectas Paralelas}: Dos rectas son paralelas si tienen la \textbf{misma pendiente ($m$)} pero distinta ordenada al origen.
+    \item \textbf{Rectas Perpendiculares}: Dos rectas son perpendiculares si sus pendientes son \textbf{opuestas e inversas}. (Ej: $m_1 = 2$ y $m_2 = -\frac{1}{2}$).
+\end{itemize}
+
+\section*{Actividades}
+
+\begin{enumerate}
+    \item \textbf{Identificar:} Indica la pendiente ($m$) y la ordenada al origen ($b$) de las siguientes funciones:
+    \begin{itemize}
+        \item $y = 3x + 5$
+        \item $y = -x + 2$
+        \item $y = \frac{1}{2}x$
+        \item $y = 4$
+    \end{itemize}
+
+    \item \textbf{Graficar:} Representa gráficamente las siguientes funciones en un mismo eje cartesiano (puedes usar el método $m$ y $b$ o una tabla de valores).
+    \begin{itemize}
+        \item $f(x) = x + 3$
+        \item $g(x) = -2x + 1$
+    \end{itemize}
+
+    \item \textbf{Hallar la Raíz:} Calcula la raíz (corte con eje X) de las funciones del punto 2.
+
+    \item \textbf{Resolver:} Dada la función $y = 5x - 10$:
+    \begin{itemize}
+        \item ¿Cuánto vale $y$ si $x = 4$?
+        \item ¿Cuánto vale $x$ si $y = 25$?
+    \end{itemize}
+
+    \item \textbf{Hallar la Ecuación:}
+    \begin{itemize}
+        \item Encuentra la ecuación de la recta que tiene pendiente $m = 3$ y pasa por el punto $(1, 4)$.
+        \item (Desafío) Encuentra la ecuación de la recta que pasa por los puntos $(1, 2)$ y $(3, 8)$.
+    \end{itemize}
+
+    \item \textbf{Problema de Aplicación:} Un servicio de streaming cobra un cargo fijo de \$5000 al mes más \$150 por cada película alquilada.
+    \begin{itemize}
+        \item Escribe la función lineal que modela el costo mensual ($y$) en función de la cantidad de películas alquiladas ($x$).
+        \item ¿Cuánto pagará una persona que alquiló 4 películas?
+        \item Si una persona pagó \$7250, ¿cuántas películas alquiló?
+    \end{itemize}
+\end{enumerate}
+
+\end{document}
